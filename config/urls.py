@@ -40,6 +40,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     # Local apps
+    path('api/v1/products/', include('apps.products.urls')),
 
     # Third-party apps
     path('accounts/', include('dj_rest_auth.urls')),
