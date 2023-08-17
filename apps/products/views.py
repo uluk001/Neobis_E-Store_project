@@ -1,12 +1,30 @@
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from .models import Product, Category, Subcategory, Brand, ProductVariant
 from .serializers import ProductSerializer, CategorySerializer, SubcategorySerializer, BrandSerializer, ProductVariantSerializer
+from django_filters.rest_framework import DjangoFilterBackend
+from .filters import ProductFilter
+from rest_framework.filters import OrderingFilter
+
 
 
 class ProductListAPIView(ListAPIView):
-    """List all products"""
+    """
+    List of products with optional filtering and sorting.
+
+    Use query parameters to filter and sort the list of products.
+
+    Parameters:
+    - `category` (int): Filter products by category ID.
+    - `brand` (int): Filter products by brand ID.
+    - `min_price` (decimal): Minimum price for filtering.
+    - `max_price` (decimal): Maximum price for filtering.
+    - `ordering` (str): Sort products by specified field. Examples: `price`, `name`.
+    """
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+    filter_backends = (DjangoFilterBackend, OrderingFilter)
+    filterset_class = ProductFilter
+    ordering_fields = ['price', 'name']
 
 
 class ProductDetailAPIView(RetrieveAPIView):
