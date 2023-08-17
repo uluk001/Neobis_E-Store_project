@@ -1,6 +1,6 @@
 from django.db import models
-from users.models import User
-from products.models import ProductVariant
+from apps.users.models import User
+from apps.products.models import ProductVariant
 
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

@@ -13,3 +13,4 @@ class Address(models.Model):
     country = models.CharField(max_length=100)
     postal_code = models.CharField(max_length=10)
     is_default = models.BooleanField(default=False)
+
