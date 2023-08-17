@@ -45,6 +45,13 @@ INSTALLED_APPS = [
 
     # Third-party apps
     'rest_framework',
+    'rest_framework.authtoken',
+    'dj_rest_auth',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'dj_rest_auth.registration',
+    'drf_yasg', # Swagger
 ]
 
 MIDDLEWARE = [
@@ -133,3 +140,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Custom user model
 AUTH_USER_MODEL = 'users.User'
+
+# Email settings
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
