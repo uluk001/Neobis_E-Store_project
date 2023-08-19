@@ -1,5 +1,8 @@
 from django.db import models
+from apps.users.models import User
 from django.urls import reverse
+from django.core.validators import MaxValueValidator, MinValueValidator
+
 
 class Category(models.Model):
     """Model definition for Category."""
@@ -7,6 +10,7 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
+
 
 class Subcategory(models.Model):
     """Model definition for Subcategory."""
@@ -16,12 +20,14 @@ class Subcategory(models.Model):
     def __str__(self):
         return self.name
 
+
 class Brand(models.Model):
     """Model definition for Brand."""
     name = models.CharField(max_length=100)
 
     def __str__(self):
         return self.name
+
 
 class Product(models.Model):
     """Model definition for Product."""
@@ -31,12 +37,15 @@ class Product(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     subcategory = models.ForeignKey(Subcategory, on_delete=models.CASCADE)
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
+    average_rating = models.DecimalField(max_digits=3, decimal_places=2, default=0)
+    total_ratings = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return self.name
     
     def get_absolute_url(self):
         return reverse("products:product_detail", kwargs={"pk": self.pk})
+
 
 class ProductVariant(models.Model):
     """Model definition for ProductVariant."""
@@ -46,3 +55,11 @@ class ProductVariant(models.Model):
 
     def __str__(self):
         return f"{self.product.name} - {self.color} - {self.size}"
+
+
+class Review(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    rating = models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
+    comment = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
