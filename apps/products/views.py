@@ -4,6 +4,7 @@ from .serializers import ProductSerializer, CategorySerializer, SubcategorySeria
 from django_filters.rest_framework import DjangoFilterBackend
 from .filters import ProductFilter
 from rest_framework.filters import OrderingFilter
+from rest_framework.permissions import IsAuthenticated
 
 
 
@@ -28,31 +29,58 @@ class ProductListAPIView(ListAPIView):
 
 
 class ProductDetailAPIView(RetrieveAPIView):
-    """Retrieve a product"""
+    """
+    Product details.
+
+    Use this endpoint to get details of a product.
+
+    Parameters:
+    - `product_id` (int): ID of the product to get details.
+    """
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+    permission_classes = [IsAuthenticated]
 
 
 class CategoryListAPIView(ListAPIView):
-    """List all categories"""
+    """
+    List of categories.
+
+    Use this endpoint to get a list of all categories.
+    """
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
 
 
 class SubcategoryListAPIView(ListAPIView):
-    """List all subcategories"""
+    """
+    List of subcategories.
+
+    Use this endpoint to get a list of all subcategories.
+    """
     queryset = Subcategory.objects.all()
     serializer_class = SubcategorySerializer
 
 
 class BrandListAPIView(ListAPIView):
-    """List all brands"""
+    """
+    List of brands.
+
+    Use this endpoint to get a list of all brands.
+    """
     queryset = Brand.objects.all()
     serializer_class = BrandSerializer
 
 
 class ProductsByCategoryAPIView(ListAPIView):
-    """List all products by category"""
+    """
+    List of products by category.
+    
+    Use this endpoint to get a list of all products by category.
+
+    Parameters:
+    - `category_id` (int): ID of the category to get products.
+    """
     serializer_class = ProductSerializer
 
     def get_queryset(self):
@@ -61,7 +89,14 @@ class ProductsByCategoryAPIView(ListAPIView):
 
 
 class ProductsBySubcategoryAPIView(ListAPIView):
-    """List all products by subcategory"""
+    """
+    List of products by subcategory.
+
+    Use this endpoint to get a list of all products by subcategory.
+
+    Parameters:
+    - `subcategory_id` (int): ID of the subcategory to get products.
+    """
     serializer_class = ProductSerializer
 
     def get_queryset(self):
@@ -70,7 +105,14 @@ class ProductsBySubcategoryAPIView(ListAPIView):
 
 
 class ProductsByBrandAPIView(ListAPIView):
-    """List all products by brand"""
+    """
+    List of products by brand.
+
+    Use this endpoint to get a list of all products by brand.
+
+    Parameters:
+    - `brand_id` (int): ID of the brand to get products.
+    """
     serializer_class = ProductSerializer
 
     def get_queryset(self):

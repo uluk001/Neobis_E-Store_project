@@ -41,10 +41,11 @@ urlpatterns = [
 
     # Local apps
     path('api/v1/products/', include('apps.products.urls')),
+    path('api/v1/carts/', include('apps.carts.urls')),
 
     # Third-party apps
-    path('accounts/', include('dj_rest_auth.urls')),
-    path('accounts/registration/', include('dj_rest_auth.registration.urls')),
+    path('api/v1/accounts/', include('dj_rest_auth.urls')),
+    path('api/v1/accounts/registration/', include('dj_rest_auth.registration.urls')),
     # Swagger
     path('swagger<format>/', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),

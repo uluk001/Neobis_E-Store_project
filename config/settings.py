@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'apps.users',
     'apps.products',
     'apps.orders',
+    'apps.carts',
 
     # Third-party apps
     'rest_framework',
@@ -89,7 +90,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+}
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
