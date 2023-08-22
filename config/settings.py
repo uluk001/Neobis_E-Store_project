@@ -55,7 +55,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'dj_rest_auth.registration',
-    'drf_yasg', # Swagger
+    'drf_yasg',  # Swagger
 ]
 
 MIDDLEWARE = [
@@ -74,7 +74,9 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(BASE_DIR, 'env/lib/python3.9/site-packages/django_filters/templates'),
+            os.path.join(
+                BASE_DIR,
+                'env/lib/python3.9/site-packages/django_filters/templates'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {

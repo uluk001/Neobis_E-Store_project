@@ -37,12 +37,13 @@ class Product(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     subcategory = models.ForeignKey(Subcategory, on_delete=models.CASCADE)
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
-    average_rating = models.DecimalField(max_digits=3, decimal_places=2, default=0)
+    average_rating = models.DecimalField(
+        max_digits=3, decimal_places=2, default=0)
     total_ratings = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return self.name
-    
+
     def get_absolute_url(self):
         return reverse("products:product_detail", kwargs={"pk": self.pk})
 
@@ -60,6 +61,9 @@ class ProductVariant(models.Model):
 class Review(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    rating = models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
+    rating = models.PositiveIntegerField(
+        validators=[
+            MinValueValidator(1),
+            MaxValueValidator(5)])
     comment = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)

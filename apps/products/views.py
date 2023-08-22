@@ -8,7 +8,6 @@ from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 
 
-
 class ProductListAPIView(ListAPIView):
     """
     List of products with optional filtering and sorting.
@@ -76,7 +75,7 @@ class BrandListAPIView(ListAPIView):
 class ProductsByCategoryAPIView(ListAPIView):
     """
     List of products by category.
-    
+
     Use this endpoint to get a list of all products by category.
 
     Parameters:
@@ -159,7 +158,7 @@ class CreateProductReviewView(CreateAPIView):
         product.save()
 
         response_message = f"Ваш отзыв успешно добавлен"
-        
+
         return Response({"message": response_message})
 
 

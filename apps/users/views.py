@@ -9,7 +9,7 @@ from rest_framework.permissions import IsAuthenticated
 class CreateAddressView(generics.CreateAPIView):
     """
     Create address for user
-    
+
     Use this endpoint to create address for user
 
     Parameters:
