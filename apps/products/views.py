@@ -5,10 +5,10 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from .filters import ProductFilter
-from .models import Brand, Category, Product, Review, Subcategory
+from .models import Brand, Category, Product, Review, Subcategory, ProductVariant
 from .serializers import (BrandSerializer, CategorySerializer,
                           ProductSerializer, ReviewSerializer,
-                          SubcategorySerializer)
+                          SubcategorySerializer, ProductVariantSerializer)
 
 
 class ProductListAPIView(ListAPIView):
@@ -179,3 +179,19 @@ class ProductReviewListView(ListAPIView):
     def get_queryset(self):
         product_id = self.kwargs['product_id']
         return Review.objects.filter(product_id=product_id)
+
+
+class ProductVariantListAPIView(ListAPIView):
+    """
+    List of product variants.
+
+    Use this endpoint to get a list of all product variants.
+
+    Parameters:
+    - `product_id` (int): ID of the product to get variants.
+    """
+    serializer_class = ProductVariantSerializer
+
+    def get_queryset(self):
+        product_id = self.kwargs['product_id']
+        return ProductVariant.objects.filter(product_id=product_id)

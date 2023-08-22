@@ -22,12 +22,6 @@ class BrandSerializer(ModelSerializer):
         fields = '__all__'
 
 
-class ProductVariantSerializer(ModelSerializer):
-    class Meta:
-        model = ProductVariant
-        fields = '__all__'
-
-
 class ProductSerializer(ModelSerializer):
     class Meta:
         model = Product
@@ -37,4 +31,10 @@ class ProductSerializer(ModelSerializer):
 class ReviewSerializer(ModelSerializer):
     class Meta:
         model = Review
+        fields = '__all__'
+
+
+class ProductVariantSerializer(ModelSerializer):
+    class Meta:
+        model = ProductVariant
         fields = '__all__'
