@@ -46,6 +46,8 @@ urlpatterns = [
     # Third-party apps
     path('api/v1/accounts/', include('dj_rest_auth.urls')),
     path('api/v1/accounts/registration/', include('dj_rest_auth.registration.urls')),
+    path('api/v1/orders/', include('apps.orders.urls')),
+    
     # Swagger
     path('swagger<format>/', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),

@@ -1,127 +1,84 @@
 from rest_framework import status
-from rest_framework.exceptions import ValidationError
 from rest_framework.generics import CreateAPIView, ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from .models import Product, Cart, CartItem
 from .permissions import IsOwner
 from .serializers import AddToCartSerializer, CartItemSerializer
+from .models import CartItem, Cart
+from apps.products.models import ProductVariant
+
 
 class AddToCartView(CreateAPIView):
     """
     Add product to cart
-
+    
     Use this endpoint to add a product to cart.
 
     Parameters:
-    - `product_id` (int): ID of the product to add.
-    - `quantity` (int): Quantity of the product to add.
+    - `product_variant_id` (int): ID of the product variant to add to cart.
+    - `quantity` (int): Quantity of the product to add to cart.
     """
     serializer_class = AddToCartSerializer
-    permission_classes = [IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        
-        user = self.request.user
-        product_id = serializer.validated_data['product_id']
+
+        product_id = serializer.validated_data['product_variant_id']
         quantity = serializer.validated_data['quantity']
-
-        try:
-            product = Product.objects.get(pk=product_id)
-        except Product.DoesNotExist:
-            raise ValidationError({"message": "Товар с данным ID не найден."}, code=status.HTTP_404_NOT_FOUND)
-
-        cart, created = Cart.objects.get_or_create(user=user)
+        user = self.request.user
+        product_variant = ProductVariant.objects.get(id=product_id)
         
         try:
-            cart_item, created = CartItem.objects.get_or_create(cart=cart, product_id=product_id)
-        except CartItem.MultipleObjectsReturned:
-            raise ValidationError({"message": "Ошибка при добавлении товара в корзину."}, code=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
+            cart = Cart.objects.get(user=user)
+        except Cart.DoesNotExist:
+            cart = Cart.objects.create(user=user)
+        cart_item, created = CartItem.objects.get_or_create(
+            cart=cart,
+            product_variant=product_variant,
+            defaults={'quantity': quantity}
+        )
+        
         if not created:
             cart_item.quantity += quantity
             cart_item.save()
-        else:
-            cart_item.quantity = quantity
-            cart_item.save()
 
-        response_message = f"{product.name} добавлена в корзину ({cart_item.quantity})"
-        
-        return Response({"message": response_message})
+        return Response({'message': 'Product added to cart successfully'}, status=status.HTTP_201_CREATED)
 
 
-
-class CartItemDeleteView(CreateAPIView):
+class CartItemsView(ListAPIView):
     """
-    Delete product from cart
+    List of cart items.
 
-    Use this endpoint to delete a product from cart.
-
-    Parameters:
-    - `product_id` (int): ID of the product to delete.
+    Use this endpoint to get a list of all cart items.
     """
-    serializer_class = AddToCartSerializer
-    permission_classes = [IsAuthenticated, IsOwner]
-
-    def create(self, request, *args, **kwargs):
-        user = self.request.user
-        product_id = request.data['product_id']
-
-        cart_item = CartItem.objects.get(cart__user=user, product_id=product_id)
-        cart_item.delete()
-
-        response_message = f"Товар удален из корзины"
-        
-        return Response({"message": response_message})
-
-
-class CartListView(ListAPIView):
     serializer_class = CartItemSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsOwner]
 
     def get_queryset(self):
         user = self.request.user
         return CartItem.objects.filter(cart__user=user)
 
-    def get_total_price(self, queryset):
-        total_price = sum(item.product.price * item.quantity for item in queryset)
-        return total_price
 
-    def list(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
-        total_price = self.get_total_price(queryset)
-        serializer = self.get_serializer(queryset, many=True)
-        response_data = {
-            'cart_items': serializer.data,
-            'total_price': total_price
-        }
-        return Response(response_data)
-
-
-class CartItemUpdateView(CreateAPIView):
+class RemoveCartItemView(CreateAPIView):
     """
-    Update product quantity in cart
+    Remove product from cart.
 
-    Use this endpoint to update product quantity in cart.
+    Use this endpoint to remove a product from cart.
 
     Parameters:
-    - `product_id` (int): ID of the product to update.
-    - `quantity` (int): New quantity of the product.
+    - `product_variant_id` (int): ID of the product variant to remove from cart.
     """
-    serializer_class = AddToCartSerializer
     permission_classes = [IsAuthenticated, IsOwner]
 
     def create(self, request, *args, **kwargs):
+        product_variant_id = request.data.get('product_variant_id')
         user = self.request.user
-        product_id = request.data['product_id']
-        quantity = request.data['quantity']
-
-        cart_item = CartItem.objects.get(cart__user=user, product_id=product_id)
-        cart_item.quantity = quantity
-        cart_item.save()
-
-        response_message = f"Количество товара обновлено"
-        
-        return Response({"message": response_message})
+        product_variant = ProductVariant.objects.get(id=product_variant_id)
+        try:
+            cart = Cart.objects.get(user=user)
+            cart_item = CartItem.objects.get(cart=cart, product_variant=product_variant)
+            cart_item.delete()
+            return Response({'message': 'Product removed from cart successfully'}, status=status.HTTP_200_OK)
+        except Cart.DoesNotExist:
+            return Response({'message': 'Cart does not exist'}, status=status.HTTP_404_NOT_FOUND)

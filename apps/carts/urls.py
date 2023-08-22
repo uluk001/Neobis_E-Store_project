@@ -1,9 +1,8 @@
-from .views import AddToCartView, CartListView, CartItemDeleteView, CartItemUpdateView
+from .views import AddToCartView, CartItemsView, RemoveCartItemView
 from django.urls import path
 
 urlpatterns = [
-    path('add/', AddToCartView.as_view()), # /api/v1/carts/add/
-    path('list/', CartListView.as_view()), # /api/v1/carts/list/
-    path('delete/', CartItemDeleteView.as_view()), # /api/v1/carts/delete/
-    path('update/', CartItemUpdateView.as_view()), # /api/v1/carts/update/
+    path('add/', AddToCartView.as_view()), #api/v1/carts/add/
+    path('items/', CartItemsView.as_view()), #api/v1/carts/items/
+    path('remove/', RemoveCartItemView.as_view()), #api/v1/carts/remove/
 ]
