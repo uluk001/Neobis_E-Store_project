@@ -1,5 +1,7 @@
 from rest_framework.serializers import ModelSerializer
-from .models import Product, Category, Subcategory, Brand, ProductVariant, Review
+
+from .models import (Brand, Category, Product, ProductVariant, Review,
+                     Subcategory)
 
 
 class CategorySerializer(ModelSerializer):

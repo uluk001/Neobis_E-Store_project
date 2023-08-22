@@ -1,9 +1,12 @@
 from django.db import models
+
 from apps.products.models import ProductVariant
 from apps.users.models import User
 
+
 class Cart(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+
 
 class CartItem(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='items')

@@ -1,11 +1,14 @@
-from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView
-from .models import Product, Category, Subcategory, Brand, ProductVariant, Review
-from .serializers import ProductSerializer, CategorySerializer, SubcategorySerializer, BrandSerializer, ProductVariantSerializer, ReviewSerializer
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.response import Response
-from .filters import ProductFilter
 from rest_framework.filters import OrderingFilter
+from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+
+from .filters import ProductFilter
+from .models import Brand, Category, Product, Review, Subcategory
+from .serializers import (BrandSerializer, CategorySerializer,
+                          ProductSerializer, ReviewSerializer,
+                          SubcategorySerializer)
 
 
 class ProductListAPIView(ListAPIView):
@@ -157,7 +160,7 @@ class CreateProductReviewView(CreateAPIView):
         product.total_ratings = total_ratings
         product.save()
 
-        response_message = f"Ваш отзыв успешно добавлен"
+        response_message = "Ваш отзыв успешно добавлен"
 
         return Response({"message": response_message})
 

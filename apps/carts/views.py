@@ -2,16 +2,18 @@ from rest_framework import status
 from rest_framework.generics import CreateAPIView, ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+
+from apps.products.models import ProductVariant
+
+from .models import Cart, CartItem
 from .permissions import IsOwner
 from .serializers import AddToCartSerializer, CartItemSerializer
-from .models import CartItem, Cart
-from apps.products.models import ProductVariant
 
 
 class AddToCartView(CreateAPIView):
     """
     Add product to cart
-    
+
     Use this endpoint to add a product to cart.
 
     Parameters:
@@ -28,7 +30,7 @@ class AddToCartView(CreateAPIView):
         quantity = serializer.validated_data['quantity']
         user = self.request.user
         product_variant = ProductVariant.objects.get(id=product_id)
-        
+
         try:
             cart = Cart.objects.get(user=user)
         except Cart.DoesNotExist:
@@ -38,7 +40,7 @@ class AddToCartView(CreateAPIView):
             product_variant=product_variant,
             defaults={'quantity': quantity}
         )
-        
+
         if not created:
             cart_item.quantity += quantity
             cart_item.save()

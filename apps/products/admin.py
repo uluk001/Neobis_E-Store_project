@@ -1,15 +1,20 @@
 from django.contrib import admin
-from .models import Category, Subcategory, Brand, Product, ProductVariant, Review
+
+from .models import (Brand, Category, Product, ProductVariant, Review,
+                     Subcategory)
+
 
 class ProductAdmin(admin.ModelAdmin):
     list_display = ('name', 'price', 'category', 'subcategory', 'brand')
     list_filter = ('category', 'subcategory', 'brand')
     search_fields = ('name', 'description')
 
+
 class SubcategoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'category')
     list_filter = ('category',)
     search_fields = ('name',)
+
 
 class BrandAdmin(admin.ModelAdmin):
     list_display = ('name',)
@@ -20,6 +25,7 @@ class ReviewAdmin(admin.ModelAdmin):
     list_display = ('product', 'user', 'rating', 'comment', 'created_at')
     list_filter = ('product', 'user')
     search_fields = ('product', 'user')
+
 
 admin.site.register(Category)
 admin.site.register(Subcategory, SubcategoryAdmin)
