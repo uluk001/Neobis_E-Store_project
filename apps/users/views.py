@@ -34,3 +34,38 @@ class CreateAddressView(generics.CreateAPIView):
 
         serializer = self.get_serializer(address_obj)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class ProfileView(generics.RetrieveUpdateAPIView):
+    """
+    Retrieve profile for user
+
+    Use this endpoint to retrieve profile for user
+
+    Parameters:
+    username - username for user
+    first_name - first name for user
+    last_name - last name for user
+    email - email for user
+    address - address for user
+    """
+    queryset = Address.objects.all()
+    serializer_class = AddressSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        user = self.request.user
+        serializer = self.get_serializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def update(self, request, *args, **kwargs):
+        user = self.request.user
+        user.username = request.data.get('username')
+        user.first_name = request.data.get('first_name')
+        user.last_name = request.data.get('last_name')
+        user.email = request.data.get('email')
+        user.address = request.data.get('address')
+        user.save()
+
+        serializer = self.get_serializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
